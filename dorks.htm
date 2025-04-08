@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flying_Eagle - Google Dorking Framework</title>
+	<style>
+		body {
+			background-image: linear-gradient(to bottom, #2c3e50, #3498db);
+			background-size: 100% 100%;
+			background-attachment: fixed;
+			font-family: 'Courier New', monospace;
+			color: #fff;
+		}
+
+		.container {
+			width: 80%;
+			margin: 40px auto;
+			background-color: rgba(0, 0, 0, 0.5);
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		}
+
+		.header {
+			background-color: #333;
+			padding: 10px;
+			border-bottom: 1px solid #444;
+			text-align: center;
+		}
+
+		.header h1 {
+			margin: 0;
+			padding: 10px;
+			font-size: 24px;
+			font-weight: bold;
+			color: #fff;
+		}
+
+		.search-form {
+			margin-top: 20px;
+		}
+
+		.search-form input[type="text"] {
+			width: 100%;
+			height: 40px;
+			padding: 10px;
+			font-size: 18px;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		}
+
+		.search-form input[type="submit"] {
+			width: 100%;
+			height: 40px;
+			padding: 10px;
+			font-size: 18px;
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.search-queries {
+			margin-top: 20px;
+		}
+
+		.search-queries a {
+			display: block;
+			margin-bottom: 10px;
+			padding: 10px;
+			background-color: #444;
+			color: #fff;
+			border-radius: 5px;
+			text-decoration: none;
+		}
+
+		.search-queries a:hover {
+			background-color: #555;
+		}
+
+		/* colour */
+		.color-1 {
+			background-image: linear-gradient(to bottom, #ff69b4, #ffe6f2);
+		}
+
+		.color-2 {
+			background-image: linear-gradient(to bottom, #33cc33, #66ff66);
+		}
+
+		.color-3 {
+			background-image: linear-gradient(to bottom, #6666ff, #9999ff);
+		}
+
+		.color-4 {
+			background-image: linear-gradient(to bottom, #ff9900, #ffffcc);
+		}
+
+		.color-5 {
+			background-image: linear-gradient(to bottom, #cc33cc, #ff99cc);
+		}
+
+		.color-6 {
+			background-image: linear-gradient(to bottom, #33cccc, #66ffff);
+		}
+
+		.color-7 {
+			background-image: linear-gradient(to bottom, #666666, #999999);
+		}
+
+		.color-8 {
+			background-image: linear-gradient(to bottom, #ff6666, #ff9999);
+		}
+
+		.color-9 {
+			background-image: linear-gradient(to bottom, #33ccff, #66ffff);
+		}
+
+		.color-10 {
+			background-image: linear-gradient(to bottom, #ccffcc, #ffffcc);
+		}
+	</style>
+</head>
+<body>
+	<div class="container" id="container">
+		<div class="header">
+			<h1>Flying_Eagle - Google Dorking Framework</h1>
+		</div>
+		<div class="search-form">
+			<input type="text" id="domain" name="domain" placeholder="Enter Domain URL">
+			<input type="submit" value="Submit">
+		</div>
+		<div class="search-queries" id="search-queries"></div>
+	</div>
+
+	<script>
+		const domainInput = document.getElementById('domain');
+		const searchQueriesDiv = document.getElementById('search-queries');
+		const container = document.getElementById('container');
+
+		// Add some attractive features
+	  		const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5', 'color-6', 'color-7', 'color-8', 'color-9', 'color-10'];
+		let currentColor = 0;
+
+		setInterval(() => {
+			container.className = 'container ' + colors[currentColor];
+			currentColor = (currentColor + 1) % colors.length;
+		}, 5000);
+
+		domainInput.addEventListener('input', (e) => {
+			const domain = e.target.value;
+			const searchQueries = [
+				// Directory Listing
+				{ title: "Directory Listing", query: `site:${domain} (inurl:directory | inurl:index.of | intitle:"index of")` },
+
+				// Configuration Files
+				{ title: "Configuration Files", query: `site:${domain} (filetype:config | inurl:config | intitle:"configuration file")` },
+
+				// Database Files
+				{ title: "Database Files", query: `site:${domain} (filetype:db | inurl:db | intitle:"database file")` },
+
+				// Wordpress
+				{ title: "Wordpress", query: `site:${domain} (inurl:wp-admin | inurl:wp-login | intitle:"wordpress login")` },
+
+				// Log Files
+				{ title: "Log Files", query: `site:${domain} (filetype:log | inurl:log | intitle:"log file")` },
+
+				// Backup & Old Files
+				{ title: "Backup & Old Files", query: `site:${domain} (filetype:backup | inurl:backup | intitle:"backup file")` },
+
+				// Login pages
+				{ title: "Login pages", query: `site:${domain} (inurl:login | intitle:"login page")` },
+
+				// SQL errors
+				{ title: "SQL errors", query: `site:${domain} (inurl:error | intitle:"sql error")` },
+
+				// Apache Config Files
+				{ title: "Apache Config Files", query: `site:${domain} (filetype:conf | inurl:conf | intitle:"apache config")` },
+
+				// Robots.txt Files
+				{ title: "Robots.txt Files", query: `site:${domain} (inurl:robots.txt | filetype:robots)` },
+
+				// Domain Eye
+				{ title: "Domain Eye", query: `site:${domain} (inurl:domain | intitle:"domain info")` },
+
+				// Publicly Exposed Documents
+				{ title: "Publicly Exposed Documents", query: `site:${domain} (filetype:doc | filetype:pdf | inurl:document)` },
+
+				// Phpinfo()
+				{ title: "Phpinfo()", query: `site:${domain} (inurl:phpinfo | intitle:"phpinfo")` },
+
+				// Finding Backdoors
+				{ title: "Finding Backdoors", query: `site:${domain} (inurl:backdoor | intitle:"backdoor")` },
+
+				// Install/Setup Files
+				{ title: "Install/Setup Files", query: `site:${domain} (inurl:install | inurl:setup | intitle:"install file")` },
+
+				// Open Redirects
+				{ title: "Open Redirects", query: `site:${domain} (inurl:redirect | intitle:"open redirect")` },
+
+				// Apache Struts RCE
+				{ title: "Apache Struts RCE", query: `site:${domain} (inurl:struts | intitle:"struts rce")` },
+
+				// 3rd Party Exposure
+				{ title: "3rd Party Exposure", query: `site:${domain} (inurl:third-party | intitle:"third party exposure")` },
+
+				// Check Security Headers
+				{ title: "Check Security Headers", query: `site:${domain} (inurl:security-headers | intitle:"security headers")` },
+
+				// GitLab
+				{ title: "GitLab", query: `site:${domain} (inurl:gitlab | intitle:"gitlab")` },
+
+				// Find Pastebin Enteries
+				{ title: "Find Pastebin Enteries", query: `site:pastebin.com (${domain} | inurl:${domain})` },
+
+				// Employees on Linkedin
+				{ title: "Employees on Linkedin", query: `site:linkedin.com (${domain} | inurl:${domain})` },
+
+								// .htaccess sensitive files
+				{ title: ".htaccess sensitive files", query: `site:${domain} (filetype:htaccess | inurl:htaccess)` },
+
+				// Find Subdomains
+				{ title: "Find Subdomains", query: `site:${domain} (inurl:subdomain | intitle:"subdomain")` },
+
+				// Find Wordpress
+				{ title: "Find Wordpress", query: `site:${domain} (inurl:wordpress | intitle:"wordpress")` },
+
+				// Search in Bitbucket and Atlassian
+				{ title: "Search in Bitbucket and Atlassian", query: `site:bitbucket.org (${domain} | inurl:${domain})` },
+
+				// Search in Stackoverflow
+				{ title: "Search in Stackoverflow", query: `site:stackoverflow.com (${domain} | inurl:${domain})` },
+
+				// Find Wordpress (Wayback Archive)
+				{ title: "Find Wordpress (Wayback Archive)", query: `site:archive.org (${domain} | inurl:${domain})` },
+
+				// Search in Github
+				{ title: "Search in Github", query: `site:github.com (${domain} | inurl:${domain})` },
+
+				// Search in OpenBug Bounty
+				{ title: "Search in OpenBug Bounty", query: `site:openbugbounty.org (${domain} | inurl:${domain})` },
+
+				// Search in Reddit
+				{ title: "Search in Reddit", query: `site:reddit.com (${domain} | inurl:${domain})` },
+
+				// Test Cross Domain
+				{ title: "Test Cross Domain", query: `site:${domain} (inurl:crossdomain | intitle:"cross domain")` },
+
+				// Test in ThreatCrowd
+				{ title: "Test in ThreatCrowd", query: `site:threatcrowd.org (${domain} | inurl:${domain})` },
+
+				// .git folders
+				{ title: ".git folders", query: `site:${domain} (inurl:.git | intitle:".git")` },
+
+				// Digital Ocean Spaces
+				{ title: "Digital Ocean Spaces", query: `site:${domain} (inurl:digitalocean | intitle:"digitalocean")` },
+
+				// Find .SWF Files
+				{ title: "Find .SWF Files", query: `site:${domain} (filetype:swf | inurl:swf)` },
+
+				// Search .SWF files in Wayback Machine
+				{ title: "Search .SWF files in Wayback Machine", query: `site:archive.org (${domain} filetype:swf | ${domain} inurl:swf)` },
+
+				// Seacrh in Wayback Machine 1
+				{ title: "Seacrh in Wayback Machine 1", query: `site:archive.org (${domain} | inurl:${domain})` },
+
+				// Search in Wayback Machine 2
+				{ title: "Search in Wayback Machine 2", query: `site:archive.org (${domain} filetype:html | ${domain} inurl:html)` },
+
+				// Reverse IP Lookup
+				{ title: "Reverse IP Lookup", query: `site:${domain} (inurl:ip | intitle:"ip address")` },
+
+				// Traefik
+				{ title: "Traefik", query: `site:${domain} (inurl:traefik | intitle:"traefik")` },
+
+				// Cloud Storage and Buckets
+				{ title: "Cloud Storage and Buckets", query: `site:${domain} (inurl:cloud | intitle:"cloud storage")` },
+
+				// S3 Buckets
+				{ title: "S3 Buckets", query: `site:${domain} (inurl:s3 | intitle:"s3 bucket")` },
+
+				// Soucre Code via “PublicWWW”
+				{ title: "Soucre Code via PublicWWW", query: `site:publicwww.com (${domain} | inurl:${domain})` },
+
+				// Check in Censys (IPv4)
+				{ title: "Check in Censys (IPv4)", query: `site:censys.io (${domain} ipv4 | inurl:${domain} ipv4)` },
+
+				// Check in Censys (Domain)
+				{ title: "Check in Censys (Domain)", query: `site:censys.io (${domain} domain | inurl:${domain} domain)` },
+
+								// Check in Censys (CERTS)
+				{ title: "Check in Censys (CERTS)", query: `site:censys.io (${domain} certs | inurl:${domain} certs)` },
+
+				// Search in Shodan
+				{ title: "Search in Shodan", query: `site:shodan.io (${domain} | inurl:${domain})` },
+
+				// CVE-2020-0646 Share Point RCE
+				{ title: "CVE-2020-0646 Share Point RCE", query: `site:${domain} (inurl:cve-2020-0646 | intitle:"cve-2020-0646")` },
+
+				// API Endpoint : WSL
+				{ title: "API Endpoint : WSL", query: `site:${domain} (inurl:wsl | intitle:"wsl")` },
+
+				// Github GIST Searches
+				{ title: "Github GIST Searches", query: `site:github.com (${domain} gist | inurl:${domain} gist)` },
+
+				// Search in CT Logs
+				{ title: "Search in CT Logs", query: `site:ct.log (${domain} | inurl:${domain})` },
+
+				// Plain Text Password Leaks
+				{ title: "Plain Text Password Leaks", query: `site:${domain} (inurl:password | intitle:"password leak")` },
+			];
+
+			const searchQueriesHtml = searchQueries.map((query) => {
+				return `<h2><a href="https://www.google.com/search?q=${encodeURIComponent(query.query)}" target="_blank">${query.title}</a></h2>`;
+			}).join('');
+
+			searchQueriesDiv.innerHTML = searchQueriesHtml;
+		});
+	</script>
+</body>
+</html>
+
+
+
